@@ -45,9 +45,9 @@ export class MetricsErrorBoundary extends React.Component<
 
   render() {
     if (this.state.hasError) {
-      if (this.props.fallback) {
+      if (this.props.fallback && this.state.error) {
         const FallbackComponent = this.props.fallback
-        return <FallbackComponent error={this.state.error!} resetError={this.resetError} />
+        return <FallbackComponent error={this.state.error} resetError={this.resetError} />
       }
 
       return (
@@ -65,7 +65,7 @@ export class MetricsErrorBoundary extends React.Component<
               We encountered an error while loading your metrics. 
               This might be a temporary issue.
             </p>
-            {process.env.NODE_ENV === 'development' && this.state.error && (
+            {process.env.NODE_ENV === 'development' && this.state.error ? (
               <details className="text-left">
                 <summary className="cursor-pointer text-sm font-medium">
                   Error Details (Development Only)
@@ -75,7 +75,7 @@ export class MetricsErrorBoundary extends React.Component<
                   {this.state.error.stack}
                 </pre>
               </details>
-            )}
+            ) : null}
             <Button onClick={this.resetError} className="w-full">
               <RefreshCw className="w-4 h-4 mr-2" />
               Try Again

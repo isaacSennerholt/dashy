@@ -3,8 +3,9 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useSupabase } from '@/providers/supabase-provider'
 import { useMetricOrdering } from './use-metric-ordering'
-import { Metric } from '@/types/metrics'
-import { CreateMetricSchema, UpdateMetricSchema, CreateMetricInput, UpdateMetricInput } from '@/lib/validations/metrics'
+import type { Metric } from '@/types/metrics'
+import { CreateMetricSchema, UpdateMetricSchema } from '@/lib/validations/metrics'
+import type { CreateMetricInput, UpdateMetricInput } from '@/lib/validations/metrics'
 import { sanitizeString, sanitizeNumber } from '@/lib/security/sanitize'
 
 export function useMetrics() {

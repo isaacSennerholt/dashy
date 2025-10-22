@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Edit, History, TrendingUp, GripVertical } from 'lucide-react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Metric } from '@/types/metrics'
+import type { Metric } from '@/types/metrics'
 import { Sparkline } from '@/components/metrics/sparkline'
 import { EditMetricModal } from '@/components/metrics/edit-metric-modal'
 import { MetricHistoryModal } from '@/components/metrics/metric-history-modal'
@@ -65,7 +65,7 @@ function MetricCardComponent({ metric, isDraggable = false }: MetricCardProps) {
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center justify-between">
             <span className="flex items-center gap-2">
-              {isDraggable && (
+              {isDraggable ? (
                 <button 
                   className="touch-none text-muted-foreground hover:text-foreground transition-colors cursor-grab active:cursor-grabbing"
                   {...attributes}
@@ -74,7 +74,7 @@ function MetricCardComponent({ metric, isDraggable = false }: MetricCardProps) {
                 >
                   <GripVertical className="h-4 w-4" />
                 </button>
-              )}
+              ) : null}
               {metric.type}
             </span>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
@@ -91,7 +91,7 @@ function MetricCardComponent({ metric, isDraggable = false }: MetricCardProps) {
           </div>
           
           <div className="flex gap-2">
-            {canEditMetric && (
+            {canEditMetric ? (
               <Button 
                 variant="outline" 
                 size="sm" 
@@ -102,7 +102,7 @@ function MetricCardComponent({ metric, isDraggable = false }: MetricCardProps) {
                 <Edit className="h-3 w-3 mr-1" aria-hidden="true" />
                 Edit
               </Button>
-            )}
+            ) : null}
             <Button 
               variant="outline" 
               size="sm" 
@@ -117,14 +117,14 @@ function MetricCardComponent({ metric, isDraggable = false }: MetricCardProps) {
         </CardContent>
       </Card>
 
-      {canEditMetric && (
+      {canEditMetric ? (
         <EditMetricModal
           metric={metric}
           open={showEditModal}
           onOpenChange={setShowEditModal}
           onSuccess={() => setShowEditModal(false)}
         />
-      )}
+      ) : null}
 
       <MetricHistoryModal
         metricId={metric.id}

@@ -12,7 +12,7 @@ export interface ParsedError {
 /**
  * Parses various error types into user-friendly format
  */
-export function parseError(error: any): ParsedError {
+export function parseError(error: unknown): ParsedError {
   // Handle Zod validation errors
   if (error instanceof ZodError) {
     return parseZodError(error)
@@ -69,7 +69,7 @@ function parseZodError(zodError: ZodError): ParsedError {
 /**
  * Parses validation error arrays (like the format you encountered)
  */
-function parseValidationErrorArray(errors: any[]): ParsedError {
+function parseValidationErrorArray(errors: unknown[]): ParsedError {
   const fieldErrors: FieldErrors = {}
 
   errors.forEach((error) => {

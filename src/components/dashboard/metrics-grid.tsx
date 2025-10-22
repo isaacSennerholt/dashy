@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { DndContext, closestCenter, DragEndEvent, MeasuringStrategy } from '@dnd-kit/core'
+import { DndContext, closestCenter, MeasuringStrategy } from '@dnd-kit/core'
+import type { DragEndEvent } from '@dnd-kit/core'
 import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'
 import { MetricCard } from '@/components/metrics/metric-card'
 import { MetricsErrorBoundary } from '@/components/metrics/metrics-error-boundary'
@@ -65,9 +66,9 @@ export function MetricsGrid() {
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {Array.from({ length: 8 }).map((_, i) => (
+        {Array.from({ length: 8 }, (_, i) => (
           <div 
-            key={i} 
+            key={`skeleton-${i}`} 
             className="h-48 bg-gray-200 animate-pulse rounded-lg"
           />
         ))}

@@ -64,8 +64,8 @@ interface ErrorFallbackProps {
 }
 
 function DefaultErrorFallback({ error, retry }: ErrorFallbackProps) {
-  const isSupabaseError = error?.message?.includes('supabase') || 
-                         error?.message?.includes('Failed to fetch') ||
+  const isSupabaseError = error?.message?.includes('supabase') ?? 
+                         error?.message?.includes('Failed to fetch') ??
                          error?.message?.includes('NetworkError')
 
   return (
@@ -87,17 +87,17 @@ function DefaultErrorFallback({ error, retry }: ErrorFallbackProps) {
             }
           </p>
           
-          {process.env.NODE_ENV === 'development' && error && (
+          {process.env.NODE_ENV === 'development' && error ? (
             <details className="mt-4 text-left">
               <summary className="cursor-pointer text-xs text-gray-500">
                 Error details (development only)
               </summary>
               <pre className="mt-2 text-xs bg-gray-100 p-2 rounded overflow-auto">
                 {error.message}
-                {error.stack && `\n\n${error.stack}`}
+                {error.stack ? `\n\n${error.stack}` : ''}
               </pre>
             </details>
-          )}
+          ) : null}
         </div>
         
         <Button onClick={retry} className="flex items-center gap-2">

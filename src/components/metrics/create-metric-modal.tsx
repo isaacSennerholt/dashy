@@ -7,8 +7,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useCreateMetric } from '@/hooks/use-metrics'
-import { CreateMetricInput } from '@/lib/validations/metrics'
-import { MetricUnit } from '@/types/metrics'
+import type { CreateMetricInput } from '@/lib/validations/metrics'
+import type { MetricUnit } from '@/types/metrics'
 
 interface CreateMetricModalProps {
   open: boolean
@@ -127,11 +127,11 @@ export function CreateMetricModal({ open, onOpenChange, onSuccess }: CreateMetri
             </Select>
           </div>
 
-          {createMetricMutation.error && (
+          {createMetricMutation.error ? (
             <div className="text-red-500 text-sm bg-red-50 border border-red-200 rounded p-3">
               {createMetricMutation.error.message}
             </div>
-          )}
+          ) : null}
 
           <div className="flex gap-3">
             <Button 

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { MetricCard } from '@/components/metrics/metric-card'
-import { Metric } from '@/types/metrics'
+import type { Metric } from '@/types/metrics'
 
 // Mock the providers and hooks
 vi.mock('@/providers/supabase-provider', () => ({

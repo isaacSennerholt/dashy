@@ -1,4 +1,4 @@
-import { MetricUnit } from '@/types/metrics'
+import type { MetricUnit } from '@/types/metrics'
 
 /**
  * Formats a numeric value with its corresponding unit

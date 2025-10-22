@@ -2,7 +2,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { useMetricHistoryDetailed } from '@/hooks/use-metric-history'
-import { MetricHistory, MetricUnit } from '@/types/metrics'
+import type { MetricHistory, MetricUnit } from '@/types/metrics'
 import { format } from 'date-fns'
 import { formatValue } from '@/lib/format'
 
@@ -38,19 +38,19 @@ export function MetricHistoryModal({ metricId, metricType, metricUnit, open, onO
           </DialogDescription>
         </DialogHeader>
 
-        {isLoading && (
+        {isLoading ? (
           <div className="flex items-center justify-center py-8">
             <div className="text-muted-foreground">Loading history...</div>
           </div>
-        )}
+        ) : null}
 
-        {error && (
+        {error ? (
           <div className="text-red-500 text-center py-8">
             Error loading history: {error.message}
           </div>
-        )}
+        ) : null}
 
-        {data && (
+        {data ? (
           <div className="space-y-6">
             {/* Statistics */}
             <div 
@@ -107,12 +107,12 @@ export function MetricHistoryModal({ metricId, metricType, metricUnit, open, onO
                       key={record.id} 
                       className="flex items-center justify-between p-3 border rounded-lg"
                       role="article"
-                      aria-label={`History entry: ${formatValue(record.value, metricUnit)} updated by ${record.user_profiles?.alias || 'Unknown'}`}
+                      aria-label={`History entry: ${formatValue(record.value, metricUnit)} updated by ${record.user_profiles?.alias ?? 'Unknown'}`}
                     >
                       <div className="flex-1">
                         <div className="font-semibold text-lg">{formatValue(record.value, metricUnit)}</div>
                         <div className="text-sm text-muted-foreground">
-                          Updated by: {record.user_profiles?.alias || 'Unknown'}
+                          Updated by: {record.user_profiles?.alias ?? 'Unknown'}
                         </div>
                       </div>
                       <div className="text-right text-sm text-muted-foreground">
@@ -124,7 +124,7 @@ export function MetricHistoryModal({ metricId, metricType, metricUnit, open, onO
               )}
             </div>
           </div>
-        )}
+        ) : null}
       </DialogContent>
     </Dialog>
   )

@@ -5,27 +5,13 @@
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error'
 
-interface LogEntry {
-  level: LogLevel
-  message: string
-  data?: any
-  timestamp: string
-  context?: string
-}
 
 class Logger {
   private get isDevelopment() {
     return process.env.NODE_ENV === 'development'
   }
 
-  private log(level: LogLevel, message: string, data?: any, context?: string) {
-    const entry: LogEntry = {
-      level,
-      message,
-      data,
-      timestamp: new Date().toISOString(),
-      context
-    }
+  private log(level: LogLevel, message: string, data?: unknown, context?: string) {
 
     // In development, log to console with nice formatting
     if (this.isDevelopment) {
@@ -55,24 +41,24 @@ class Logger {
     }
   }
 
-  debug(message: string, data?: any, context?: string) {
+  debug(message: string, data?: unknown, context?: string) {
     this.log('debug', message, data, context)
   }
 
-  info(message: string, data?: any, context?: string) {
+  info(message: string, data?: unknown, context?: string) {
     this.log('info', message, data, context)
   }
 
-  warn(message: string, data?: any, context?: string) {
+  warn(message: string, data?: unknown, context?: string) {
     this.log('warn', message, data, context)
   }
 
-  error(message: string, data?: any, context?: string) {
+  error(message: string, data?: unknown, context?: string) {
     this.log('error', message, data, context)
   }
 
   // Convenience method for Error objects
-  exception(error: Error, context?: string, additionalData?: any) {
+  exception(error: Error, context?: string, additionalData?: unknown) {
     this.error(error.message, { ...additionalData, stack: error.stack }, context)
   }
 }
@@ -81,17 +67,17 @@ class Logger {
 export const logger = new Logger()
 
 // Export typed logger functions for easier imports
-export const logDebug = (message: string, data?: any, context?: string) => 
+export const logDebug = (message: string, data?: unknown, context?: string) => 
   logger.debug(message, data, context)
 
-export const logInfo = (message: string, data?: any, context?: string) => 
+export const logInfo = (message: string, data?: unknown, context?: string) => 
   logger.info(message, data, context)
 
-export const logWarn = (message: string, data?: any, context?: string) => 
+export const logWarn = (message: string, data?: unknown, context?: string) => 
   logger.warn(message, data, context)
 
-export const logError = (message: string, data?: any, context?: string) => 
+export const logError = (message: string, data?: unknown, context?: string) => 
   logger.error(message, data, context)
 
-export const logException = (error: Error, context?: string, additionalData?: any) => 
+export const logException = (error: Error, context?: string, additionalData?: unknown) => 
   logger.exception(error, context, additionalData)

@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useSupabase } from '@/providers/supabase-provider'
-import { SignInSchema, SignUpSchema, SignInInput, SignUpInput } from '@/lib/validations/auth'
+import { SignInSchema, SignUpSchema } from '@/lib/validations/auth'
+import type { SignInInput, SignUpInput } from '@/lib/validations/auth'
 import { RateLimiter } from '@/lib/security/sanitize'
 import { parseError, getFieldError, hasFieldError, type FieldErrors } from '@/lib/error-utils'
 
@@ -181,7 +182,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
             )}
           </div>
 
-          {isSignUp && (
+          {isSignUp ? (
             <div className="space-y-2">
               <Label htmlFor="alias">Alias</Label>
               <Input
@@ -202,7 +203,7 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
                 <p className="text-sm text-red-500">{getFieldError(fieldErrors, 'alias')}</p>
               )}
             </div>
-          )}
+          ) : null}
 
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
@@ -229,11 +230,11 @@ export function AuthModal({ open, onOpenChange, onSuccess }: AuthModalProps) {
             )}
           </div>
 
-          {generalError && (
+          {generalError ? (
             <div className="text-red-500 text-sm bg-red-50 border border-red-200 rounded p-3">
               {generalError}
             </div>
-          )}
+          ) : null}
 
           <div className="flex flex-col gap-3">
             <Button 

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useUpdateMetric } from '@/hooks/use-metrics'
-import { Metric } from '@/types/metrics'
+import type { Metric } from '@/types/metrics'
 
 interface EditMetricModalProps {
   metric: Metric
@@ -88,11 +88,11 @@ export function EditMetricModal({ metric, open, onOpenChange, onSuccess }: EditM
             />
           </div>
 
-          {updateMetricMutation.error && (
+          {updateMetricMutation.error ? (
             <div className="text-red-500 text-sm bg-red-50 border border-red-200 rounded p-3">
               {updateMetricMutation.error.message}
             </div>
-          )}
+          ) : null}
 
           <div className="flex gap-3">
             <Button 

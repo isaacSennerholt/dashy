@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { formatValue, formatBytes } from '@/lib/format'
-import { MetricUnit } from '@/types/metrics'
+import type { MetricUnit } from '@/types/metrics'
 
 describe('formatValue', () => {
   describe('percentage formatting', () => {

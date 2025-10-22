@@ -54,7 +54,7 @@ export class RateLimiter {
   
   isRateLimited(key: string): boolean {
     const now = Date.now()
-    const attempts = this.attempts.get(key) || []
+    const attempts = this.attempts.get(key) ?? []
     
     // Remove old attempts outside the window
     const recentAttempts = attempts.filter(time => now - time < this.windowMs)
@@ -67,7 +67,7 @@ export class RateLimiter {
   
   recordAttempt(key: string): void {
     const now = Date.now()
-    const attempts = this.attempts.get(key) || []
+    const attempts = this.attempts.get(key) ?? []
     attempts.push(now)
     this.attempts.set(key, attempts)
   }

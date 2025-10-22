@@ -2,8 +2,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useMetrics, useOrderedMetrics } from '@/hooks/use-metrics'
-import { Metric } from '@/types/metrics'
-import React, { ReactNode } from 'react'
+import type { Metric } from '@/types/metrics'
+import React from 'react'
+import type { ReactNode } from 'react'
 
 // Mock the dependencies
 vi.mock('@/providers/supabase-provider', () => ({
@@ -52,7 +53,6 @@ const mockMetrics: Metric[] = [
 
 describe('useMetrics', () => {
   let queryClient: QueryClient
-  const mockSupabaseQuery = vi.fn()
   const mockFrom = vi.fn()
   const mockSelect = vi.fn()
   const mockOrder = vi.fn()
