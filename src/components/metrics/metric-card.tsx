@@ -16,9 +16,10 @@ import { formatValue } from '@/lib/format'
 interface MetricCardProps {
   metric: Metric
   isDraggable?: boolean
+  isUpdating?: boolean
 }
 
-function MetricCardComponent({ metric, isDraggable = false }: MetricCardProps) {
+function MetricCardComponent({ metric, isDraggable = false, isUpdating = false }: MetricCardProps) {
   const { user } = useSupabase()
   const [showEditModal, setShowEditModal] = useState(false)
   const [showHistoryModal, setShowHistoryModal] = useState(false)
@@ -58,7 +59,7 @@ function MetricCardComponent({ metric, isDraggable = false }: MetricCardProps) {
       <Card 
         ref={setNodeRef}
         style={style}
-        className={`${isDragging ? 'z-50' : ''}`}
+        className={`${isDragging ? 'z-50' : ''} ${isUpdating ? 'opacity-50 transition-opacity' : ''}`}
         role="article" 
         aria-label={`Metric card for ${metric.type}`}
       >

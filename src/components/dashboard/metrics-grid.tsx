@@ -9,7 +9,6 @@ import { MetricsErrorBoundary } from '@/components/metrics/metrics-error-boundar
 import { useMetrics, useOrderedMetrics } from '@/hooks/use-metrics'
 import { useUpdateMetricOrdering } from '@/hooks/use-metric-ordering'
 import { useSupabase } from '@/providers/supabase-provider'
-import { useQueryClient } from '@tanstack/react-query'
 import { logException } from '@/lib/logger'
 
 export function MetricsGrid() {
@@ -17,7 +16,6 @@ export function MetricsGrid() {
   const metrics = useOrderedMetrics()
   const { user } = useSupabase()
   const updateMetricOrdering = useUpdateMetricOrdering()
-  const queryClient = useQueryClient()
   const [isDragging, setIsDragging] = useState(false)
 
   const handleDragEnd = async (event: DragEndEvent) => {
@@ -40,22 +38,18 @@ export function MetricsGrid() {
     const [movedMetric] = reorderedMetrics.splice(oldIndex, 1)
     reorderedMetrics.splice(newIndex, 0, movedMetric)
 
-    // Optimistic update - immediately update the UI
-    queryClient.setQueryData(['metrics', user?.id], reorderedMetrics)
-
     // Create order data for database
     const newOrdering = reorderedMetrics.map((metric, index) => ({
       metric_id: metric.id,
       order_index: index
     }))
 
-    // Update ordering in database
+    // Update ordering in database with optimistic update handled by the mutation
     try {
       await updateMetricOrdering.mutateAsync(newOrdering)
     } catch (error) {
       logException(error as Error, 'MetricsGrid.handleDragEnd', { userId: user?.id })
-      // Revert optimistic update on error
-      queryClient.setQueryData(['metrics', user?.id], metrics)
+      // Error handling is now managed by the mutation's onError callback
     }
   }
 
@@ -110,10 +104,14 @@ export function MetricsGrid() {
         }}
       >
         <SortableContext items={metrics.map(m => m.id)} strategy={rectSortingStrategy}>
-          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ${isDragging ? 'select-none' : ''}`}>
+          <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ${isDragging ? 'select-none' : ''} ${updateMetricOrdering.isPending ? 'pointer-events-none' : ''}`}>
             {metrics.map((metric) => (
               <MetricsErrorBoundary key={metric.id}>
-                <MetricCard metric={metric} isDraggable={true} />
+                <MetricCard 
+                  metric={metric} 
+                  isDraggable={true} 
+                  isUpdating={updateMetricOrdering.isPending}
+                />
               </MetricsErrorBoundary>
             ))}
           </div>

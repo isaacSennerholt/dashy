@@ -62,10 +62,40 @@ export function useUpdateMetricOrdering() {
 
       return orders
     },
-    onSuccess: () => {
-      // Only invalidate metric-ordering query, not metrics
-      // The metrics cache is already optimistically updated
-      queryClient.invalidateQueries({ queryKey: ['metric-ordering', user?.id] })
+    onMutate: async (newOrders: MetricOrder[]) => {
+      if (!user) return
+
+      // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
+      await queryClient.cancelQueries({ queryKey: ['metrics', user.id] })
+
+      // Snapshot the previous value
+      const previousMetrics = queryClient.getQueryData(['metrics', user.id])
+
+      // Optimistically update the metrics cache with new ordering
+      if (previousMetrics) {
+        const currentMetrics = previousMetrics as any[]
+        const reorderedMetrics = newOrders.map(order => 
+          currentMetrics.find(metric => metric.id === order.metric_id)
+        ).filter(Boolean)
+
+        queryClient.setQueryData(['metrics', user.id], reorderedMetrics)
+      }
+
+      // Return a context object with the snapshotted value
+      return { previousMetrics }
+    },
+    onError: (err, newOrders, context) => {
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousMetrics && user) {
+        queryClient.setQueryData(['metrics', user.id], context.previousMetrics)
+      }
+    },
+    onSettled: () => {
+      // Always refetch after error or success to ensure we have correct data
+      if (user) {
+        queryClient.invalidateQueries({ queryKey: ['metrics', user.id] })
+        queryClient.invalidateQueries({ queryKey: ['metric-ordering', user.id] })
+      }
     }
   })
 }
