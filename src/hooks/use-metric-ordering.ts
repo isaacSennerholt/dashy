@@ -66,28 +66,21 @@ export function useUpdateMetricOrdering() {
       if (!user) return
 
       // Cancel any outgoing refetches (so they don't overwrite our optimistic update)
-      await queryClient.cancelQueries({ queryKey: ['metrics', user.id] })
+      await queryClient.cancelQueries({ queryKey: ['metric-ordering', user.id] })
 
-      // Snapshot the previous value
-      const previousMetrics = queryClient.getQueryData(['metrics', user.id])
+      // Snapshot the previous ordering
+      const previousOrdering = queryClient.getQueryData(['metric-ordering', user.id])
 
-      // Optimistically update the metrics cache with new ordering
-      if (previousMetrics) {
-        const currentMetrics = previousMetrics as any[]
-        const reorderedMetrics = newOrders.map(order => 
-          currentMetrics.find(metric => metric.id === order.metric_id)
-        ).filter(Boolean)
-
-        queryClient.setQueryData(['metrics', user.id], reorderedMetrics)
-      }
+      // Optimistically update the ordering cache
+      queryClient.setQueryData(['metric-ordering', user.id], newOrders)
 
       // Return a context object with the snapshotted value
-      return { previousMetrics }
+      return { previousOrdering }
     },
     onError: (err, newOrders, context) => {
       // If the mutation fails, use the context returned from onMutate to roll back
-      if (context?.previousMetrics && user) {
-        queryClient.setQueryData(['metrics', user.id], context.previousMetrics)
+      if (context?.previousOrdering && user) {
+        queryClient.setQueryData(['metric-ordering', user.id], context.previousOrdering)
       }
     },
     onSettled: () => {
