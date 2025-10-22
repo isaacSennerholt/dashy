@@ -3,6 +3,7 @@ import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useMetrics, useOrderedMetrics } from '@/hooks/use-metrics'
 import { Metric } from '@/types/metrics'
+import React, { ReactNode } from 'react'
 
 // Mock the dependencies
 vi.mock('@/providers/supabase-provider', () => ({
@@ -52,6 +53,9 @@ const mockMetrics: Metric[] = [
 describe('useMetrics', () => {
   let queryClient: QueryClient
   const mockSupabaseQuery = vi.fn()
+  const mockFrom = vi.fn()
+  const mockSelect = vi.fn()
+  const mockOrder = vi.fn()
 
   beforeEach(() => {
     queryClient = new QueryClient({
@@ -62,26 +66,24 @@ describe('useMetrics', () => {
     })
     vi.clearAllMocks()
 
+    // Setup the promise chain - mockOrder should return the actual promise
+    mockSelect.mockReturnValue({ order: mockOrder })
+    mockFrom.mockReturnValue({ select: mockSelect })
+
     mockUseSupabase.mockReturnValue({
       supabase: {
-        from: vi.fn(() => ({
-          select: vi.fn(() => ({
-            order: vi.fn(() => mockSupabaseQuery)
-          }))
-        }))
+        from: mockFrom
       },
       user: { id: 'user-1' }
     })
   })
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  )
+  const wrapper = ({ children }: { children: ReactNode }) => 
+    React.createElement(QueryClientProvider, { client: queryClient }, children)
 
   it('should fetch metrics successfully', async () => {
-    mockSupabaseQuery.mockResolvedValue({
+    // Set up mockOrder to return a resolved promise
+    mockOrder.mockResolvedValue({
       data: mockMetrics,
       error: null
     })
@@ -92,12 +94,16 @@ describe('useMetrics', () => {
       expect(result.current.isSuccess).toBe(true)
     })
 
+    // Check that the Supabase chain was called correctly
+    expect(mockFrom).toHaveBeenCalledWith('metrics')
+    expect(mockSelect).toHaveBeenCalled()
+    expect(mockOrder).toHaveBeenCalledWith('updated_at', { ascending: false })
     expect(result.current.data).toEqual(mockMetrics)
   })
 
   it('should handle fetch errors', async () => {
     const mockError = new Error('Database connection failed')
-    mockSupabaseQuery.mockResolvedValue({
+    mockOrder.mockResolvedValue({
       data: null,
       error: mockError
     })
@@ -112,7 +118,7 @@ describe('useMetrics', () => {
   })
 
   it('should return empty array when no data', async () => {
-    mockSupabaseQuery.mockResolvedValue({
+    mockOrder.mockResolvedValue({
       data: null,
       error: null
     })
@@ -140,11 +146,8 @@ describe('useOrderedMetrics', () => {
     vi.clearAllMocks()
   })
 
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  )
+  const wrapper = ({ children }: { children: ReactNode }) => 
+    React.createElement(QueryClientProvider, { client: queryClient }, children)
 
   it('should return metrics in default order when no user ordering exists', () => {
     // Mock useMetrics to return test data

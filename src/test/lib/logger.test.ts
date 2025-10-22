@@ -27,6 +27,8 @@ describe('Logger', () => {
   describe('in development environment', () => {
     beforeEach(() => {
       process.env.NODE_ENV = 'development'
+      // Force the logger to re-evaluate the environment
+      vi.resetModules()
     })
 
     it('should log debug messages to console.debug', () => {
