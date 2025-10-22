@@ -77,7 +77,7 @@ describe('DashboardHeader', () => {
       renderWithProviders(<DashboardHeader />)
       
       expect(screen.getByText('Stats Dashboard')).toBeInTheDocument()
-      expect(screen.getByText('Real-time metrics monitoring and analytics')).toBeInTheDocument()
+      expect(screen.getByText('Metrics monitoring and analytics')).toBeInTheDocument()
     })
 
     it('should show sign in button when user is not authenticated', () => {

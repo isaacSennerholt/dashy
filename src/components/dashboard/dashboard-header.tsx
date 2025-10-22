@@ -32,7 +32,7 @@ export function DashboardHeader() {
         <div>
           <h1 className="text-4xl font-bold tracking-tight">Stats Dashboard</h1>
           <p className="text-muted-foreground mt-2">
-            Real-time metrics monitoring and analytics
+            Metrics monitoring and analytics
           </p>
         </div>
         
