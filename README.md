@@ -285,7 +285,6 @@ See [TESTING_STRATEGY.md](./TESTING_STRATEGY.md) for detailed testing documentat
 
 3. **Deploy**
    - Automatic deployments on git push
-   - Preview deployments for pull requests
    
 4. **GitHub Actions Integration**
    
