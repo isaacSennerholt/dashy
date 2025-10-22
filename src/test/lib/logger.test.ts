@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { logger, logDebug, logInfo, logWarn, logError, logException } from '@/lib/logger'
 
 describe('Logger', () => {
-  const originalEnv = process.env.NODE_ENV
   let consoleSpy: {
     debug: any
     log: any
@@ -21,12 +20,12 @@ describe('Logger', () => {
 
   afterEach(() => {
     vi.restoreAllMocks()
-    process.env.NODE_ENV = originalEnv
+    vi.unstubAllEnvs()
   })
 
   describe('in development environment', () => {
     beforeEach(() => {
-      process.env.NODE_ENV = 'development'
+      vi.stubEnv('NODE_ENV', 'development')
       // Force the logger to re-evaluate the environment
       vi.resetModules()
     })
@@ -88,7 +87,7 @@ describe('Logger', () => {
 
   describe('in production environment', () => {
     beforeEach(() => {
-      process.env.NODE_ENV = 'production'
+      vi.stubEnv('NODE_ENV', 'production')
     })
 
     it('should not log debug messages to console', () => {
@@ -118,7 +117,7 @@ describe('Logger', () => {
 
   describe('exception logging', () => {
     beforeEach(() => {
-      process.env.NODE_ENV = 'development'
+      vi.stubEnv('NODE_ENV', 'development')
     })
 
     it('should log exception with error message and stack', () => {
@@ -161,7 +160,7 @@ describe('Logger', () => {
 
   describe('convenience functions', () => {
     beforeEach(() => {
-      process.env.NODE_ENV = 'development'
+      vi.stubEnv('NODE_ENV', 'development')
     })
 
     it('should export working convenience functions', () => {
@@ -193,7 +192,7 @@ describe('Logger', () => {
 
   describe('edge cases', () => {
     beforeEach(() => {
-      process.env.NODE_ENV = 'development'
+      vi.stubEnv('NODE_ENV', 'development')
     })
 
     it('should handle undefined and null values gracefully', () => {

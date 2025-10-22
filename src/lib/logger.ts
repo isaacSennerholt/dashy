@@ -59,7 +59,10 @@ class Logger {
 
   // Convenience method for Error objects
   exception(error: Error, context?: string, additionalData?: unknown) {
-    this.error(error.message, { ...additionalData, stack: error.stack }, context)
+    const data = additionalData && typeof additionalData === 'object' 
+      ? { ...additionalData, stack: error.stack }
+      : { stack: error.stack }
+    this.error(error.message, data, context)
   }
 }
 

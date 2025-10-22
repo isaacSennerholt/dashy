@@ -2,10 +2,8 @@ import { afterEach } from 'vitest'
 import { cleanup } from '@testing-library/react'
 import '@testing-library/jest-dom'
 
-// Set NODE_ENV to development for tests by default
-if (!process.env.NODE_ENV) {
-  process.env.NODE_ENV = 'development'
-}
+// Note: NODE_ENV is set automatically by test environment
+// Individual tests can override using vi.stubEnv() if needed
 
 afterEach(() => {
   cleanup()

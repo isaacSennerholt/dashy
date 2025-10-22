@@ -19,7 +19,7 @@ export function parseError(error: unknown): ParsedError {
   }
 
   // Handle errors with a 'message' property (Supabase, general errors)
-  if (error && typeof error.message === 'string') {
+  if (error && typeof error === 'object' && 'message' in error && typeof error.message === 'string') {
     return {
       fieldErrors: {},
       generalError: error.message
@@ -66,6 +66,15 @@ function parseZodError(zodError: ZodError): ParsedError {
   }
 }
 
+interface ValidationError {
+  path?: string[]
+  message?: string
+}
+
+function isValidationError(error: unknown): error is ValidationError {
+  return typeof error === 'object' && error !== null
+}
+
 /**
  * Parses validation error arrays (like the format you encountered)
  */
@@ -73,7 +82,7 @@ function parseValidationErrorArray(errors: unknown[]): ParsedError {
   const fieldErrors: FieldErrors = {}
 
   errors.forEach((error) => {
-    if (error.path && Array.isArray(error.path) && error.message) {
+    if (isValidationError(error) && error.path && Array.isArray(error.path) && typeof error.message === 'string') {
       const fieldName = error.path.join('.')
       if (!fieldErrors[fieldName]) {
         fieldErrors[fieldName] = []
