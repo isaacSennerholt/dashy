@@ -4,16 +4,6 @@
   "framework": "nextjs",
   "installCommand": "npm ci",
   "devCommand": "npm run dev",
-  "env": {
-    "NEXT_PUBLIC_SUPABASE_URL": "@NEXT_PUBLIC_SUPABASE_URL",
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@NEXT_PUBLIC_SUPABASE_ANON_KEY"
-  },
-  "build": {
-    "env": {
-      "NEXT_PUBLIC_SUPABASE_URL": "@NEXT_PUBLIC_SUPABASE_URL",
-      "NEXT_PUBLIC_SUPABASE_ANON_KEY": "@NEXT_PUBLIC_SUPABASE_ANON_KEY"
-    }
-  },
   "functions": {
     "app/api/**/*.ts": {
       "maxDuration": 30
